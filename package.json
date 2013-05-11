@@ -1,0 +1,9 @@
+{
+    "name": "osm-pbf-leaflet",
+    "version": "0.1.0",
+    "description": "Leaflet layer for parsing and displaying OpenStreetMap PBF (.osm.pbf)",
+    "main": "index.js",
+    "dependencies": {
+        "osm-pbf": "0.1.0"
+    }
+}
