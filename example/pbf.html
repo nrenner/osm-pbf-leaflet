@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>OSM PBF example</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
+        <style type="text/css">
+            body {
+                margin: 0;
+            }
+            html, body, #map {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>
+
+        <!-- TODO use bundle (build scripts + documentation) -->
+        <script src="../node_modules/osm-pbf/dist/osm-pbf.js"></script>
+        <script src="../lib/leaflet-osm.js"></script>
+        <script>
+            function require() {
+                return pbf;
+            }
+        </script>
+        <script src="../index.js"></script>
+
+        <script>
+         (function() {
+            var map = L.map('map');
+
+            var osm = new L.OSM.Mapnik().addTo(map);
+            var layersControl = L.control.layers({'OSM': osm}).addTo(map);
+
+            function get(url, handler, responseType) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                if (responseType) {
+                    xhr.responseType = responseType;
+                }
+                xhr.onload = handler;
+                xhr.send();
+            }
+            
+            get('../node_modules/osm-pbf/example/xml/data-snapshot.osm', function(e) {
+                var style = {
+                    color: 'orange',
+                    weight: 10
+                };
+                var lOsmData = new L.OSM.DataLayer(this.responseXML, {
+                    styles: {
+                        node: style,
+                        way: style
+                    }
+                });
+                lOsmData.addTo(map);
+                map.fitBounds(lOsmData.getBounds());
+                layersControl.addOverlay(lOsmData, 'XML');
+            });
+
+            get('../node_modules/osm-pbf/example/data-snapshot.osm.pbf', function(e) {
+                var lOsmPbf = new L.OSM.PBF(this.response);
+                lOsmPbf.addTo(map);
+                map.fitBounds(lOsmPbf.getBounds());
+                layersControl.addOverlay(lOsmPbf, 'PBF');
+            }, 'arraybuffer');
+            
+        })();
+        </script>
+    </body>
+</html>
