@@ -21,16 +21,7 @@
         <div id="map"></div>
 
         <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>
-
-        <!-- TODO use bundle (build scripts + documentation) -->
-        <script src="../node_modules/osm-pbf/dist/osm-pbf.js"></script>
-        <script src="../lib/leaflet-osm.js"></script>
-        <script>
-            function require() {
-                return pbf;
-            }
-        </script>
-        <script src="../index.js"></script>
+        <script src="../dist/osm-pbf-leaflet.js"></script>
 
         <script>
          (function() {
@@ -48,8 +39,8 @@
                 xhr.onload = handler;
                 xhr.send();
             }
-            
-            get('../node_modules/osm-pbf/example/xml/data-snapshot.osm', function(e) {
+
+            get('data.osm.xml', function(e) {
                 var style = {
                     color: 'orange',
                     weight: 10
@@ -63,9 +54,10 @@
                 lOsmData.addTo(map);
                 map.fitBounds(lOsmData.getBounds());
                 layersControl.addOverlay(lOsmData, 'XML');
+                lOsmData.bringToBack();
             });
 
-            get('../node_modules/osm-pbf/example/data-snapshot.osm.pbf', function(e) {
+            get('data.osm.pbf', function(e) {
                 var lOsmPbf = new L.OSM.PBF(this.response);
                 lOsmPbf.addTo(map);
                 map.fitBounds(lOsmPbf.getBounds());
