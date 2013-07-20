@@ -158,20 +158,6 @@ process.chdir = function (dir) {
 (function(){require('./lib/OSMReader.js');
 var pbf = require('osm-pbf');
 
-OSM.Reader.prototype.interestingNode = function(node, ways) {
-    if (!node.used) {
-        return true;
-    }
-
-    for ( var key in node.tags) {
-        if (this.options.uninterestingTags.indexOf(key) < 0) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
 OSM.PBFParser = {
     getNodes: function(buffer) {
         var result = {};
@@ -309,16 +295,7 @@ OSM.Reader.incl = {
     },
     
     interestingNode: function (node, ways) {
-      var used = false;
-    
-      for (var i = 0; i < ways.length; i++) {
-        if (ways[i].nodes.indexOf(node) >= 0) {
-          used = true;
-          break;
-        }
-      }
-    
-      if (!used) {
+      if (!node.used) {
         return true;
       }
     

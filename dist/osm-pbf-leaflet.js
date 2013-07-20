@@ -158,20 +158,6 @@ process.chdir = function (dir) {
 (function(){require('./lib/OSMReader.js');
 var pbf = require('osm-pbf');
 
-OSM.Reader.prototype.interestingNode = function(node, ways) {
-    if (!node.used) {
-        return true;
-    }
-
-    for ( var key in node.tags) {
-        if (this.options.uninterestingTags.indexOf(key) < 0) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
 OSM.PBFParser = {
     getNodes: function(buffer) {
         var result = {};
@@ -249,29 +235,6 @@ L.OSM.PBF = L.OSM.DataLayer.extend({
 L.osmPbf = function (data, options) {
     return new L.OSM.PBF(data, options);
 };
-/*
-L.OSM.getNodesXML = L.OSM.getNodes;
-L.OSM.getWaysXML = L.OSM.getWays;
-
-L.Util.extend(L.OSM, {
-	getNodes : function(data) {
-		if (data instanceof ArrayBuffer) {
-			return L.OSM.getNodesPBF(data);
-		} else {
-			return L.OSM.getNodesXML(data);
-		}
-	},
-	getWays : function(data, nodes) {
-		if (data instanceof ArrayBuffer) {
-			return L.OSM.getWaysPBF(data, nodes);
-		} else {
-			return L.OSM.getWaysXML(data, nodes);
-		}
-	}
-});
-
-L.Util.extend(L.OSM, OSM.PBFParser);
-*/
 
 },{"./PBFParser.js":4,"./lib/OSMReader.js":6,"./lib/leaflet-osm.js":7}],6:[function(require,module,exports){
 self.OSM = self.OSM || {};
@@ -351,16 +314,7 @@ OSM.Reader.incl = {
     },
     
     interestingNode: function (node, ways) {
-      var used = false;
-    
-      for (var i = 0; i < ways.length; i++) {
-        if (ways[i].nodes.indexOf(node) >= 0) {
-          used = true;
-          break;
-        }
-      }
-    
-      if (!used) {
+      if (!node.used) {
         return true;
       }
     
@@ -498,7 +452,8 @@ L.Util.extend(L.OSM, {
         type: "node",
         lat: node.getAttribute("lat"),
         lon: node.getAttribute("lon"),
-        tags: this.getTags(node)
+        tags: this.getTags(node),
+        used: false
       };
     }
 
@@ -520,7 +475,9 @@ L.Util.extend(L.OSM, {
       };
 
       for (var j = 0; j < nds.length; j++) {
-        way_object.nodes[j] = nodes[nds[j].getAttribute("ref")];
+        var node = nodes[nds[j].getAttribute("ref")];
+        way_object.nodes[j] = node;
+        node.used = true;
       }
 
       result.push(way_object);

@@ -15,26 +15,3 @@ L.OSM.PBF = L.OSM.DataLayer.extend({
 L.osmPbf = function (data, options) {
     return new L.OSM.PBF(data, options);
 };
-/*
-L.OSM.getNodesXML = L.OSM.getNodes;
-L.OSM.getWaysXML = L.OSM.getWays;
-
-L.Util.extend(L.OSM, {
-	getNodes : function(data) {
-		if (data instanceof ArrayBuffer) {
-			return L.OSM.getNodesPBF(data);
-		} else {
-			return L.OSM.getNodesXML(data);
-		}
-	},
-	getWays : function(data, nodes) {
-		if (data instanceof ArrayBuffer) {
-			return L.OSM.getWaysPBF(data, nodes);
-		} else {
-			return L.OSM.getWaysXML(data, nodes);
-		}
-	}
-});
-
-L.Util.extend(L.OSM, OSM.PBFParser);
-*/
