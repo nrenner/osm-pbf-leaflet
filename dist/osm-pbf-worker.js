@@ -155,7 +155,8 @@ process.chdir = function (dir) {
 };
 
 },{}],4:[function(require,module,exports){
-(function(){require('./lib/OSMReader.js');
+(function(){self.OSM = self.OSM || {};
+
 var pbf = require('osm-pbf');
 
 OSM.PBFParser = {
@@ -217,7 +218,12 @@ OSM.PBFParser = {
     }
 };
 })()
-},{"./lib/OSMReader.js":5,"osm-pbf":8}],5:[function(require,module,exports){
+},{"osm-pbf":9}],5:[function(require,module,exports){
+// without Leaflet dependency
+require('./PBFParser.js');
+require('./lib/OSMReader.js');
+
+},{"./PBFParser.js":4,"./lib/OSMReader.js":6}],6:[function(require,module,exports){
 self.OSM = self.OSM || {};
 
 OSM.Reader = function (parser) {
@@ -320,7 +326,7 @@ OSM.Reader.prototype.options = {
     uninterestingTags: ['source', 'source_ref', 'source:ref', 'history', 'attribution', 'created_by', 'tiger:county', 'tiger:tlid', 'tiger:upload_uuid']
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function(){// minimal node.js BufferShim browser shim for pbf.js
 
 // global
@@ -379,7 +385,7 @@ BufferShim.prototype.utf8Slice = function (start, end) {
 };
 
 })()
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // minimal fs module browser shim for pbf.js
 //
 // pbf.js usages:
@@ -404,7 +410,7 @@ var read = function(arrayBuffer, viewBuffer, offset, length, position, callback)
 };
 
 exports.read = read;
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function(){var pbf = require('../pbf.js');
 
 // Require replacements/extensions of Browserify's globals shims.
@@ -512,7 +518,7 @@ exports.OnePassPBFFile = OnePassPBFFile;
 exports.PBFFile = pbf.PBFFile;
 
 })()
-},{"../pbf.js":11,"./buffer.js":6,"./process.js":9}],9:[function(require,module,exports){
+},{"../pbf.js":12,"./buffer.js":7,"./process.js":10}],10:[function(require,module,exports){
 (function(process){// modifies Browserify's process shim with synchronous nextTick
 
 process.nextTick = function(func) {
@@ -521,7 +527,7 @@ process.nextTick = function(func) {
 };
 
 })(require("__browserify_process"))
-},{"__browserify_process":3}],10:[function(require,module,exports){
+},{"__browserify_process":3}],11:[function(require,module,exports){
 var zlib = require('zlib');
 
 // adds unzip method shim to zlib-browserify (imaya/zlib.js)
@@ -542,7 +548,7 @@ zlib.unzip = function(buffer, callback) {
 
 module.exports = zlib;
 
-},{"zlib":1}],11:[function(require,module,exports){
+},{"zlib":1}],12:[function(require,module,exports){
 (function(process){var fs = require('./browser/fs.js');
 var zlib = require('./browser/zlib.js');
 var protobuf = require('./protobuf.js');
@@ -997,7 +1003,7 @@ exports.PBFFile = PBFFile;
 exports.Fileblock = Fileblock;
 
 })(require("__browserify_process"))
-},{"./browser/fs.js":7,"./browser/zlib.js":10,"./protobuf.js":12,"__browserify_process":3}],12:[function(require,module,exports){
+},{"./browser/fs.js":8,"./browser/zlib.js":11,"./protobuf.js":13,"__browserify_process":3}],13:[function(require,module,exports){
 
 var WIRETYPE={'LENGTH':2,
               'VARINT':0};
@@ -1116,5 +1122,5 @@ exports.decode_signed=decode_signed;
 exports.Message=Message;
 exports.DenseData=DenseData;
 
-},{}]},{},[4])
+},{}]},{},[5])
 ;

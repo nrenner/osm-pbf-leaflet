@@ -1,4 +1,5 @@
-require('./lib/OSMReader.js');
+self.OSM = self.OSM || {};
+
 var pbf = require('osm-pbf');
 
 OSM.PBFParser = {

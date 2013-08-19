@@ -155,7 +155,8 @@ process.chdir = function (dir) {
 };
 
 },{}],4:[function(require,module,exports){
-(function(){require('./lib/OSMReader.js');
+(function(){self.OSM = self.OSM || {};
+
 var pbf = require('osm-pbf');
 
 OSM.PBFParser = {
@@ -217,7 +218,7 @@ OSM.PBFParser = {
     }
 };
 })()
-},{"./lib/OSMReader.js":6,"osm-pbf":10}],5:[function(require,module,exports){
+},{"osm-pbf":10}],5:[function(require,module,exports){
 require('./PBFParser.js');
 require('./lib/OSMReader.js');
 require('./lib/leaflet-osm.js');
