@@ -3,7 +3,13 @@
     "version": "0.1.0",
     "description": "Leaflet layer for parsing and displaying OpenStreetMap PBF (.osm.pbf)",
     "main": "index.js",
+    "browser": {
+        "osm-read": "./node_modules/osm-read/osm-read-pbf.js"
+    },
     "dependencies": {
-        "osm-pbf": "0.1.0"
+        "osm-read": ""
+    },
+    "scripts": {
+        "browserify": "browserify . --bare -o ./dist/osm-pbf-leaflet.js && browserify -e ./indexWorker.js --bare -o ./dist/osm-pbf-worker.js"
     }
 }

@@ -1,62 +1,60 @@
 self.OSM = self.OSM || {};
 
-var pbf = require('osm-pbf');
+var pbfParser = require('osm-read');
 
 OSM.PBFParser = {
     getNodes: function(buffer) {
-        var result = {};
+        var nodes = {};
+        var ways = [];
 
-        var blockFile = new pbf.BufferBlockFile(buffer);
-        var pbffile = new pbf.PBFFile(blockFile);
-        pbffile.nodes(function(node) {
-            result[node.id] = {
-                id : node.id,
-                type : "node",
-                lat: node.lat, 
-                lon: node.lon,
-                tags : node.keyval,
-                used : false
-            };
-        }, function() {
-            // finish is not called when process.nextTick shim is synchronous
+        pbfParser.parse({
+            buffer: buffer,
+            endDocument: function(){},
+            bounds: function(bounds){},
+            node: function(node){
+                node.type = "node";
+                node.used = false;
+                nodes[node.id] = node;
+            },
+            way: function(way){
+                var len, incomplete = false;
+
+                way.type = "way";
+                way.nodes = new Array(way.nodeRefs.length),
+
+                len = way.nodes.length;
+                for (var j = 0; j < len; j++) {
+                    var node = nodes[way.nodeRefs[j]];
+                    if (!node) {
+                        incomplete = true;
+                        break;
+                    }
+                    way.nodes[j] = node;
+                    node.used = true;
+                }
+                
+                delete way.nodeRefs;
+
+                //discard incomplete ways
+                if (!incomplete) {
+                    ways.push(way);
+                }
+            },
+            error: function(msg){
+                console.log('error: ' + msg);
+                throw msg;
+            }
         });
 
-        return result;
+        nodes.ways = ways;
+
+        return nodes;
     },
 
     getWays: function(buffer, nodes) {
-        var result = [];
-
-        var blockFile = new pbf.BufferBlockFile(buffer);
-        var pbffile = new pbf.PBFFile(blockFile);
-        pbffile.ways(function(way) {
-            var len, incomplete = false;
-            var way_object = {
-                id : way.id,
-                type : "way",
-                nodes : new Array(way.refs.length),
-                tags : way.keysvals
-            };
-
-            len = way_object.nodes.length;
-            for (var j = 0; j < len; j++) {
-                var node = nodes[way.refs[j]];
-                if (!node) {
-                    incomplete = true;
-                    break;
-                }
-                way_object.nodes[j] = node;
-                node.used = true;
-            }
-
-            //discard incomplete ways
-            if (!incomplete) {
-                result.push(way_object);
-            }
-        }, function() {
-            // finish is not called when process.nextTick shim is synchronous
-        });
-
-        return result;
+        // quick hack to avoid two-pass read: ways passed from getNodes
+        var ways = nodes.ways;
+        delete nodes.ways;
+        return ways;
     }
 };
